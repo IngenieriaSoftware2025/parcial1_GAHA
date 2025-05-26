@@ -25,11 +25,16 @@ class Prestamo extends ActiveRecord {
 
     public function __construct($args = []){
         $this->id = $args['id'] ?? null;
-        $this->id_libro = $args['id_libro'] ?? null;
-        $this->id_estado = $args['id_estado'] ?? null;
+        $this->id_libro = $args['id_libro'] ?? 0;
+        $this->id_estado = $args['id_estado'] ?? 1;
         $this->fecha_prestamo = $args['fecha_prestamo'] ?? '';
-        $this->fecha_devolucion = $args['fecha_devolucion'] ?? '';
+        $this->fecha_devolucion = $args['fecha_devolucion'] ?? null;
         $this->observaciones = $args['observaciones'] ?? '';
         $this->situacion = $args['situacion'] ?? 1;
+    }
+
+    public static function EliminarPrestamos($id){
+        $sql = "DELETE FROM prestamos WHERE id = $id";
+        return self::SQL($sql);
     }
 }
