@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use Model\ActiveRecord;
 use Model\Libros;
 use Model\Personas;
 use Model\Prestamo;
