@@ -13,7 +13,7 @@ class LibrosController{
 
     public function renderizarPagina(Router $router)
     {
-        $router->render('biblioteca/index', []);
+        $router->render('libros/index', []);
     }
 
     public function guardarLibroAPI(){

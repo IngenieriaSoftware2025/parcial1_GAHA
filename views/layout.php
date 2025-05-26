@@ -16,7 +16,7 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="/ejemplo/">
+            <a class="navbar-brand" href="/parcial1_GAHA/">
                 <img src="<?= asset('./images/cit.png') ?>" width="35px'" alt="cit" >
                 Aplicaciones
             </a>
@@ -24,7 +24,7 @@
                 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin: 0;">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/parcial1_GAHA/libros"><i class="bi bi-book me-2"></i>Biblioteca</a>
+                        <a class="nav-link" aria-current="page" href="/parcial1_GAHA/libros/"><i class="bi bi-book me-2"></i>Biblioteca</a>
                     </li>
   
                     <div class="nav-item dropdown " >
