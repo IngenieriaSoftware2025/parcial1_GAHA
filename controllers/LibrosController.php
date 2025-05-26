@@ -10,133 +10,128 @@ use MVC\Router;
 
 class LibrosController extends ActiveRecord
 {
-public function renderizarPagina(Router $router)   
-{
-    $router->render('libros/index', []);
-}
-
-public static function guardarLibroAPI()
-{
-    getHeadersApi();
-
-    try {
-        if (empty($_POST['titulo']) || empty($_POST['autor'])) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'El titulo del libro y el nombre del autor no puede ir vacio'
-            ]);
-            return;
-        }
-
-        $_POST['descripcion'] = trim(htmlspecialchars($_POST['descripcion'] ?? ''));
-
-        $data = new Libro([
-            'titulo' => $_POST['titulo'],
-            'autor' => $_POST['autor'],
-            'descripcion' => $_POST['descripcion'],
-            'fecha_registro' => date('Y-m-d H:i:s'),
-            'situacion' => 1
-        ]);
-
-        $crear = $data->crear();
-
-        if ($crear['resultado']) {
-            http_response_code(200);
-            echo json_encode([
-                'codigo' => 1,
-                'mensaje' => 'El libro se guardo correctamente.',
-                'id' => $crear['id']
-            ]);
-        } else {
-            http_response_code(500);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'Hubo error al guardar el libro'
-            ]);
-        }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode([
-            'codigo' => 0,
-            'mensaje' => 'Ocurrio un error',
-            'detalle' => $e->getMessage()
-        ]);
+    public function renderizarPagina(Router $router)
+    {
+        $router->render('libros/index', []);
     }
-}
 
-public static function buscarLibrosAPI()
-{
-    try {
-        $sql = "SELECT * FROM libros WHERE situacion = 1";
-        $data = self::fetchArray($sql);
-
-        http_response_code(200);
-        echo json_encode([
-            'codigo' => 1,
-            'data' => $data
-        ]);
-    } catch (Exception $e) {
-        http_response_code(400);
-        echo json_encode([
-            'codigo' => 0,
-            'mensaje' => 'Error al obtener los libros'
-        ]);
-    }
-}
-
-    public static function modificarLibroAPI()
+    public static function guardarLibroAPI()
     {
         getHeadersApi();
 
-        $id = $_POST['id'];
-        $_POST['titulo'] = ucwords(strtolower(trim(htmlspecialchars($_POST['titulo']))));
-
-        $cantidad_titulo = strlen($_POST['titulo']);
-
-        if ($cantidad_titulo < 2) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'La cantidad de digitos que debe de contener el titulo debe de ser mayor a dos'
-            ]);
-            return;
-        }
-
-        $_POST['autor'] = ucwords(strtolower(trim(htmlspecialchars($_POST['autor']))));
-
-        $cantidad_autor = strlen($_POST['autor']);
-
-        if ($cantidad_autor < 2) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'La cantidad de digitos que debe de contener el autor debe de ser mayor a dos'
-            ]);
-            return;
-        }
-
         try {
-            $data = Libro::find($id);
-            $data->sincronizar([
+            if (empty($_POST['titulo']) || empty($_POST['autor'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'El titulo del libro y el nombre del autor no puede ir vacio'
+                ]);
+                return;
+            }
+
+            $_POST['descripcion'] = trim(htmlspecialchars($_POST['descripcion'] ?? ''));
+
+            $data = new Libro([
                 'titulo' => $_POST['titulo'],
                 'autor' => $_POST['autor'],
                 'descripcion' => $_POST['descripcion'],
+                'fecha_registro' => date('Y-m-d H:i:s'),
                 'situacion' => 1
             ]);
-            $data->actualizar();
+
+            $crear = $data->crear();
+
+            if ($crear['resultado']) {
+                http_response_code(200);
+                echo json_encode([
+                    'codigo' => 1,
+                    'mensaje' => 'El libro se guardo correctamente.',
+                    'id' => $crear['id']
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Hubo error al guardar el libro'
+                ]);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Ocurrio un error',
+                'detalle' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public static function buscarLibrosAPI()
+    {
+        try {
+            $sql = "SELECT * FROM libros WHERE situacion = 1";
+            $data = self::fetchArray($sql);
 
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'La informacion del libro ha sido modificada exitosamente'
+                'data' => $data
             ]);
         } catch (Exception $e) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al guardar',
-                'detalle' => $e->getMessage(),
+                'mensaje' => 'Error al obtener los libros'
+            ]);
+        }
+    }
+
+    public static function modificarLibroAPI()
+    {
+        getHeadersApi();
+
+        try {
+            if (empty($_POST['id']) || empty($_POST['titulo']) || empty($_POST['autor'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Faltan datos para actualizar el libro'
+                ]);
+                return;
+            }
+            $libro = Libro::find($_POST['id']);
+            if (!$libro) {
+                http_response_code(404);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se encontró ese libro'
+                ]);
+                return;
+            }
+
+            $_POST['descripcion'] = trim(htmlspecialchars($_POST['descripcion'] ?? ''));
+
+            $libro->sincronizar($_POST);
+            $resultado = $libro->actualizar();
+
+            if ($resultado['resultado']) {
+                http_response_code(200);
+                echo json_encode([
+                    'codigo' => 1,
+                    'mensaje' => 'El libro se modifico correctamente'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se puede modificar el libro'
+                ]);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Ocurrió un error',
+                'detalle' => $e->getMessage()
             ]);
         }
     }
@@ -144,23 +139,48 @@ public static function buscarLibrosAPI()
     public static function eliminarLibroAPI()
     {
         try {
+            if (empty($_GET['id'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se sabe que libro eliminar'
+                ]);
+                return;
+            }
+
             $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
 
-            $data = Libro::find($id);
-            $data->sincronizar(['situacion' => 0]);
-            $data->actualizar();
+            $libro = Libro::find($id);
+            if (!$libro) {
+                http_response_code(404);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Ese libro no existe'
+                ]);
+                return;
+            }
+            $libro->sincronizar(['situacion' => 0]);
+            $resultado = $libro->actualizar();
 
-            http_response_code(200);
-            echo json_encode([
-                'codigo' => 1,
-                'mensaje' => 'El registro ha sido eliminado correctamente'
-            ]);
+            if ($resultado['resultado']) {
+                http_response_code(200);
+                echo json_encode([
+                    'codigo' => 1,
+                    'mensaje' => 'El libro se eliminó correctamente'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se pudo eliminar el libro'
+                ]);
+            }
         } catch (Exception $e) {
-            http_response_code(400);
+            http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al Eliminar',
-                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error al eliminar',
+                'detalle' => $e->getMessage()
             ]);
         }
     }
@@ -168,25 +188,37 @@ public static function buscarLibrosAPI()
     public static function librosDisponiblesAPI()
     {
         try {
-            $condiciones = ["situacion = 1"];
+            $sql = "SELECT id, titulo, autor FROM libros WHERE situacion = 1 ORDER BY titulo";
+            $todosLosLibros = self::fetchArray($sql);
 
-            $where = implode(" AND ", $condiciones);
+            $sqlPrestados = "SELECT DISTINCT id_libro FROM prestamos WHERE id_estado = 1 AND situacion = 1";
+            $librosPrestados = self::fetchArray($sqlPrestados);
 
-            $sql = "SELECT * FROM libros WHERE $where";
-            $data = self::fetchArray($sql);
+            $idsPrestados = [];
+            foreach ($librosPrestados as $prestado) {
+                $idsPrestados[] = $prestado['id_libro'];
+            }
+
+            $librosDisponibles = [];
+            foreach ($todosLosLibros as $libro) {
+
+                if (!in_array($libro['id'], $idsPrestados)) {
+                    $librosDisponibles[] = $libro;
+                }
+            }
 
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
                 'mensaje' => 'Libros disponibles obtenidos correctamente',
-                'data' => $data
+                'data' => $librosDisponibles
             ]);
         } catch (Exception $e) {
-            http_response_code(400);
+            http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
                 'mensaje' => 'Error al obtener los libros disponibles',
-                'detalle' => $e->getMessage(),
+                'detalle' => $e->getMessage()
             ]);
         }
     }
@@ -195,21 +227,41 @@ public static function buscarLibrosAPI()
     {
         getHeadersApi();
 
-        $_POST['id_libro'] = filter_var($_POST['id_libro'], FILTER_VALIDATE_INT);
-
-        if ($_POST['id_libro'] <= 0) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'Debe seleccionar un libro válido'
-            ]);
-            return;
-        }
-
-        $_POST['observaciones'] = htmlspecialchars($_POST['observaciones']);
-
         try {
-            $data = new Prestamo([
+            if (empty($_POST['id_libro']) || empty($_POST['observaciones'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Necesitamos saber qué libro y a quién se lo prestás'
+                ]);
+                return;
+            }
+
+            $_POST['id_libro'] = filter_var($_POST['id_libro'], FILTER_VALIDATE_INT);
+            if ($_POST['id_libro'] <= 0) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Debe seleccionar un libro válido'
+                ]);
+                return;
+            }
+
+            $_POST['observaciones'] = trim(htmlspecialchars($_POST['observaciones']));
+
+            $sql = "SELECT id FROM prestamos WHERE id_libro = {$_POST['id_libro']} AND id_estado = 1 AND situacion = 1";
+            $prestadoActual = self::fetchArray($sql);
+
+            if (!empty($prestadoActual)) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Ese libro ya está prestado a alguien más'
+                ]);
+                return;
+            }
+
+            $prestamo = new Prestamo([
                 'id_libro' => $_POST['id_libro'],
                 'id_estado' => 1,
                 'fecha_prestamo' => date('Y-m-d H:i:s'),
@@ -218,19 +270,27 @@ public static function buscarLibrosAPI()
                 'situacion' => 1
             ]);
 
-            $crear = $data->crear();
+            $resultado = $prestamo->crear();
 
-            http_response_code(200);
-            echo json_encode([
-                'codigo' => 1,
-                'mensaje' => 'Exito el prestamo ha sido registrado correctamente'
-            ]);
+            if ($resultado['resultado']) {
+                http_response_code(200);
+                echo json_encode([
+                    'codigo' => 1,
+                    'mensaje' => 'El préstamo se registró correctamente'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se pudo registrar el préstamo'
+                ]);
+            }
         } catch (Exception $e) {
-            http_response_code(400);
+            http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al guardar',
-                'detalle' => $e->getMessage(),
+                'mensaje' => 'Error al guardar el préstamo',
+                'detalle' => $e->getMessage()
             ]);
         }
     }
@@ -238,42 +298,35 @@ public static function buscarLibrosAPI()
     public static function buscarPrestamosAPI()
     {
         try {
-            $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
-            $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+            $sql = "SELECT 
+                    p.id,
+                    p.fecha_prestamo,
+                    p.fecha_devolucion,
+                    p.observaciones,
+                    p.id_estado,
+                    l.titulo,
+                    l.autor,
+                    e.nombre as estado_nombre
+                FROM prestamos p 
+                INNER JOIN libros l ON p.id_libro = l.id 
+                INNER JOIN estados_prestamo e ON p.id_estado = e.id
+                WHERE p.situacion = 1";
 
-            $condiciones = ["p.situacion >= 0"];
-
-            if ($fecha_inicio) {
-                $condiciones[] = "p.fecha_prestamo >= '{$fecha_inicio} 00:00:00'";
-            }
-
-            if ($fecha_fin) {
-                $condiciones[] = "p.fecha_prestamo <= '{$fecha_fin} 23:59:59'";
-            }
-
-            $where = implode(" AND ", $condiciones);
-
-            $sql = "SELECT p.*, l.titulo, l.autor, e.nombre as estado_nombre 
-                    FROM prestamos p 
-                    INNER JOIN libros l ON p.id_libro = l.id 
-                    INNER JOIN estados_prestamo e ON p.id_estado = e.id
-                    WHERE $where 
-                    ORDER BY p.fecha_prestamo DESC";
-            
-            $data = self::fetchArray($sql);
+            $sql .= " ORDER BY p.fecha_prestamo DESC";
+            $prestamos = self::fetchArray($sql);
 
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'Prestamos obtenidos correctamente',
-                'data' => $data
+                'mensaje' => 'Préstamos obtenidos correctamente',
+                'data' => $prestamos
             ]);
         } catch (Exception $e) {
-            http_response_code(400);
+            http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al obtener los prestamos',
-                'detalle' => $e->getMessage(),
+                'mensaje' => 'Error al obtener los préstamos',
+                'detalle' => $e->getMessage()
             ]);
         }
     }
