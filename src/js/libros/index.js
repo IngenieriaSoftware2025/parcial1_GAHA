@@ -472,6 +472,7 @@ const DevolverPrestamo = async (e) => {
                 });
                 
                 BuscarPrestamos();
+                CargarLibros();
             } else {
                 await Swal.fire({
                     position: "center",
