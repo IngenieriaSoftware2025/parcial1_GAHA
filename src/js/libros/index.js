@@ -17,26 +17,16 @@ const observaciones = document.getElementById('observaciones');
 const ValidarObservaciones = () => {
     if (!observaciones) return;
     
-    const CantidadCaracteres = observaciones.value
-
-    if (CantidadCaracteres.length < 1) {
-        observaciones.classList.remove('is-valid', 'is-invalid');
+    const texto = observaciones.value.trim();
+    
+    observaciones.classList.remove('is-valid', 'is-invalid');
+    
+    if (texto.length === 0) {
+        return;
+    } else if (texto.length < 3) {
+        observaciones.classList.add('is-invalid');
     } else {
-        if (CantidadCaracteres.length < 2) {
-            Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Revise las observaciones",
-                text: "La cantidad de caracteres debe ser mayor a 2",
-                showConfirmButton: true,
-            });
-
-            observaciones.classList.remove('is-valid');
-            observaciones.classList.add('is-invalid');
-        } else {
-            observaciones.classList.remove('is-invalid');
-            observaciones.classList.add('is-valid');
-        }
+        observaciones.classList.add('is-valid');
     }
 }
 
@@ -48,8 +38,8 @@ const GuardarLibro = async (event) => {
         Swal.fire({
             position: "center",
             icon: "info",
-            title: "FORMULARIO INCOMPLETO",
-            text: "Debe de validar todos los campos",
+            title: "faltan datos por llenar",
+            text: "ingresa titulo y autor",
             showConfirmButton: true,
         });
         BtnGuardarLibro.disabled = false;
@@ -92,7 +82,11 @@ const GuardarLibro = async (event) => {
             });
         }
     } catch (error) {
-        console.log(error)
+        await Swal.fire({
+        icon: "error",
+        title: "Algo salió mal",
+        text: "No se pudo conectar con el servidor"
+    });
     }
     BtnGuardarLibro.disabled = false;
 }
@@ -100,28 +94,21 @@ const GuardarLibro = async (event) => {
 const CargarLibros = async () => {
     if (!libro_id_prestamo) return;
 
-    const url = '/parcial1_GAHA/libros/librosDisponiblesAPI';
-    const config = {
-        method: 'GET'
-    }
-
     try {
-        const respuesta = await fetch(url, config);
+        const respuesta = await fetch('/parcial1_GAHA/libros/librosDisponiblesAPI');
         const datos = await respuesta.json();
-        const { codigo, data } = datos
 
-        if (codigo == 1 && data) {
-            libro_id_prestamo.innerHTML = '<option value="">-- Seleccione un libro --</option>';
-            
-            data.forEach(libro => {
-                const option = document.createElement('option');
-                option.value = libro.id;
-                option.textContent = `${libro.titulo} - ${libro.autor}`;
-                libro_id_prestamo.appendChild(option);
+        libro_id_prestamo.innerHTML = '<option value="">Seleccione un libro</option>';
+
+        if (datos.codigo == 1 && datos.data) {
+            datos.data.forEach(libro => {
+                libro_id_prestamo.innerHTML += `
+                    <option value="${libro.id}">${libro.titulo} - ${libro.autor}</option>
+                `;
             });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 
