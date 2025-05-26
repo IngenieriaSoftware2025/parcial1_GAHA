@@ -17,7 +17,7 @@ class EstadoPrestamo extends ActiveRecord {
     public $descripcion;
     public $situacion;
 
-    public function __construct($args = []) {
+    public function __construct($args = []){
         $this->id = $args['id'] ?? null;
         $this->nombre = $args['nombre'] ?? '';
         $this->descripcion = $args['descripcion'] ?? '';

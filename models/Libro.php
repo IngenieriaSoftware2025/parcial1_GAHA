@@ -2,8 +2,9 @@
 
 namespace Model;
 
-class Libros extends ActiveRecord { 
-    
+class Libro extends ActiveRecord
+{
+
     public static $tabla = 'libros';
     public static $columnasDB = [
         'titulo',
@@ -21,7 +22,8 @@ class Libros extends ActiveRecord {
     public $fecha_registro;
     public $situacion;
 
-    public function __construct($args = []) {
+    public function __construct($args = [])
+    {
         $this->id = $args['id'] ?? null;
         $this->titulo = $args['titulo'] ?? '';
         $this->autor = $args['autor'] ?? '';
@@ -30,5 +32,3 @@ class Libros extends ActiveRecord {
         $this->situacion = $args['situacion'] ?? 1;
     }
 }
-
-
