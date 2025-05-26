@@ -12,11 +12,11 @@
                         <div class="row g-4 mb-3">
                             <div class="col-md-6">
                                 <label for="titulo" class="form-label">Título del Libro</label>
-                                <input type="text" class="form-control form-control-lg" id="titulo" name="titulo" placeholder="Ingrese el título del libro" required>
+                                <input type="text" class="form-control form-control-lg" id="titulo" name="titulo" placeholder="Ingrese el título del libro">
                             </div>
                             <div class="col-md-6">
                                 <label for="autor" class="form-label">Autor del Libro</label>
-                                <input type="text" class="form-control form-control-lg" id="autor" name="autor" placeholder="Ingrese el autor del libro" required>
+                                <input type="text" class="form-control form-control-lg" id="autor" name="autor" placeholder="Ingrese el autor del libro">
                             </div>
                         </div>
                         <div class="row g-4 mb-3">
@@ -55,13 +55,13 @@
                         <div class="row g-4 mb-3">
                             <div class="col-md-6">
                                 <label for="id_libro" class="form-label">Seleccionar Libro</label>
-                                <select name="id_libro" class="form-select form-select-lg" id="id_libro" required>
-                                    <option value="">Seleccione un libro</option>
+                                <select name="id_libro" class="form-select form-select-lg" id="id_libro">
+                                <option value="">Seleccione un libro</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="observaciones" class="form-label">Observaciones</label>
-                                <input type="text" class="form-control form-control-lg" id="observaciones" name="observaciones" placeholder="¿A quién se prestará?" required>
+                                <input type="text" class="form-control form-control-lg" id="observaciones" name="observaciones" placeholder="a quien se le presta?">
                             </div>
                         </div>
                         <div class="d-flex justify-content-center gap-3">

@@ -10,92 +10,80 @@ use MVC\Router;
 
 class LibrosController extends ActiveRecord
 {
-    public function renderizarPagina(Router $router)
-    {
-        $router->render('libros/index', []);
-    }
+public function renderizarPagina(Router $router)   
+{
+    $router->render('libros/index', []);
+}
 
-    public static function guardarLibroAPI()
-    {
-        getHeadersApi();
+public static function guardarLibroAPI()
+{
+    getHeadersApi();
 
-        $_POST['titulo'] = ucwords(strtolower(trim(htmlspecialchars($_POST['titulo']))));
-
-        $cantidad_titulo = strlen($_POST['titulo']);
-
-        if ($cantidad_titulo < 2) {
+    try {
+        if (empty($_POST['titulo']) || empty($_POST['autor'])) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'La cantidad de digitos que debe de contener el titulo debe de ser mayor a dos'
+                'mensaje' => 'El titulo del libro y el nombre del autor no puede ir vacio'
             ]);
             return;
         }
 
-        $_POST['autor'] = ucwords(strtolower(trim(htmlspecialchars($_POST['autor']))));
+        $_POST['descripcion'] = trim(htmlspecialchars($_POST['descripcion'] ?? ''));
 
-        $cantidad_autor = strlen($_POST['autor']);
+        $data = new Libro([
+            'titulo' => $_POST['titulo'],
+            'autor' => $_POST['autor'],
+            'descripcion' => $_POST['descripcion'],
+            'fecha_registro' => date('Y-m-d H:i:s'),
+            'situacion' => 1
+        ]);
 
-        if ($cantidad_autor < 2) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'La cantidad de digitos que debe de contener el autor debe de ser mayor a dos'
-            ]);
-            return;
-        }
+        $crear = $data->crear();
 
-        try {
-            $data = new Libro([
-                'titulo' => $_POST['titulo'],
-                'autor' => $_POST['autor'],
-                'descripcion' => $_POST['descripcion'],
-                'fecha_registro' => date('Y-m-d H:i:s'),
-                'situacion' => 1
-            ]);
-
-            $crear = $data->crear();
-
+        if ($crear['resultado']) {
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'Exito el libro ha sido registrado correctamente'
+                'mensaje' => 'El libro se guardo correctamente.',
+                'id' => $crear['id']
             ]);
-        } catch (Exception $e) {
-            http_response_code(400);
+        } else {
+            http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al guardar',
-                'detalle' => $e->getMessage(),
+                'mensaje' => 'Hubo error al guardar el libro'
             ]);
         }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'codigo' => 0,
+            'mensaje' => 'Ocurrio un error',
+            'detalle' => $e->getMessage()
+        ]);
     }
+}
 
-    public static function buscarLibrosAPI()
-    {
-        try {
-            $condiciones = ["situacion = 1"];
+public static function buscarLibrosAPI()
+{
+    try {
+        $sql = "SELECT * FROM libros WHERE situacion = 1";
+        $data = self::fetchArray($sql);
 
-            $where = implode(" AND ", $condiciones);
-
-            $sql = "SELECT * FROM libros WHERE $where";
-            $data = self::fetchArray($sql);
-
-            http_response_code(200);
-            echo json_encode([
-                'codigo' => 1,
-                'mensaje' => 'Libros obtenidos correctamente',
-                'data' => $data
-            ]);
-        } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'Error al obtener los libros',
-                'detalle' => $e->getMessage(),
-            ]);
-        }
+        http_response_code(200);
+        echo json_encode([
+            'codigo' => 1,
+            'data' => $data
+        ]);
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'codigo' => 0,
+            'mensaje' => 'Error al obtener los libros'
+        ]);
     }
+}
 
     public static function modificarLibroAPI()
     {
