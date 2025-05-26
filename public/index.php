@@ -8,8 +8,8 @@ use Controllers\LibrosController;
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
 
+$router->get('/', [AppController::class, 'index']);
 $router->get('/libros', [LibrosController::class, 'renderizarPagina']);
 
 
-// Comprueba y valida las rutas
 $router->comprobarRutas();

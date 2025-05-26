@@ -151,4 +151,4 @@
 </div>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<script src="<?= asset('build/js/index.js') ?>"></script>
+<script src="<?= asset('build/js/libros/index.js') ?>"></script>
