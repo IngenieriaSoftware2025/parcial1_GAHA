@@ -16,4 +16,10 @@ $router->post('/libros/modificarAPI', [LibrosController::class, 'modificarLibroA
 $router->get('/libros/eliminarAPI', [LibrosController::class, 'eliminarLibroAPI']);
 
 
+$router->get('/libros/librosDisponiblesAPI', [LibrosController::class, 'librosDisponiblesAPI']);
+$router->post('/libros/guardarPrestamoAPI', [LibrosController::class, 'guardarPrestamoAPI']);
+$router->get('/libros/buscarPrestamosAPI', [LibrosController::class, 'buscarPrestamosAPI']);
+$router->get('/libros/marcarDevueltoAPI', [LibrosController::class, 'marcarDevueltoAPI']);
+
+
 $router->comprobarRutas();

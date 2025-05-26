@@ -7,8 +7,7 @@
                         <h5 class="fw-bold text-secondary mb-2">¡Bienvenido a la Aplicación para el registro, modificación y eliminación de libros!</h5>
                         <h3 class="fw-bold text-primary mb-0">CONTROL DE LIBROS DE LAURA</h3>
                     </div>
-                    
-                    <!-- Tabs de navegación -->
+
                     <ul class="nav nav-pills justify-content-center mb-4" id="mainTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="libros-tab" data-bs-toggle="pill" data-bs-target="#libros" type="button" role="tab">
@@ -23,7 +22,7 @@
                     </ul>
 
                     <div class="tab-content" id="mainTabsContent">
-                        <!-- TAB LIBROS -->
+
                         <div class="tab-pane fade show active" id="libros" role="tabpanel">
                             <form id="FormLibros" class="p-4 bg-white rounded-3 shadow-sm border">
                                 <input type="hidden" id="libro_id" name="id">
@@ -60,7 +59,6 @@
                             </form>
                         </div>
 
-                        <!-- TAB PRÉSTAMOS -->
                         <div class="tab-pane fade" id="prestamos" role="tabpanel">
                             <form id="FormPrestamos" class="p-4 bg-white rounded-3 shadow-sm border">
                                 <div class="row g-4 mb-3">
@@ -96,13 +94,11 @@
         </div>
     </div>
 
-    <!-- TABLAS DE DATOS -->
     <div class="row justify-content-center mt-5">
         <div class="col-lg-11">
             <div class="card shadow-lg border-primary rounded-4">
                 <div class="card-body">
-                    
-                    <!-- Tabs para las tablas -->
+
                     <ul class="nav nav-tabs mb-4" id="tablaTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="tabla-libros-tab" data-bs-toggle="tab" data-bs-target="#tabla-libros" type="button" role="tab">
@@ -117,7 +113,7 @@
                     </ul>
 
                     <div class="tab-content" id="tablaTabsContent">
-                        <!-- TABLA LIBROS -->
+
                         <div class="tab-pane fade show active" id="tabla-libros" role="tabpanel">
                             <h3 class="text-center text-primary mb-4">Mis Libros en la Biblioteca</h3>
                             <div class="table-responsive">
@@ -134,7 +130,7 @@
                             </div>
                         </div>
 
-                        <!-- TABLA PRÉSTAMOS -->
+
                         <div class="tab-pane fade" id="tabla-prestamos" role="tabpanel">
                             <h3 class="text-center text-primary mb-4">Control de Préstamos Activos</h3>
                             <div class="table-responsive">
