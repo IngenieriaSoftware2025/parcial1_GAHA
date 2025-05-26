@@ -1,5 +1,5 @@
 <div class="container py-5">
-    
+
     <div class="row mb-5 justify-content-center">
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-4">
@@ -57,7 +57,7 @@
                             <div class="col-md-6">
                                 <label for="id_libro" class="form-label">Seleccionar Libro</label>
                                 <select name="id_libro" class="form-select form-select-lg" id="id_libro">
-                                <option value="">Seleccione un libro</option>
+                                    <option value="">Seleccione un libro</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -99,6 +99,22 @@
             <div class="card shadow-lg border-success rounded-4">
                 <div class="card-body">
                     <h3 class="text-center text-success mb-4">Préstamos registrados en la base de datos</h3>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+                            <input type="date" id="fecha_inicio" class="form-control form-control-lg">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="fecha_fin" class="form-label">Fecha de fin</label>
+                            <input type="date" id="fecha_fin" class="form-control form-control-lg">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary btn-lg w-100 shadow" id="btn_filtrar_fecha">
+                                <i class="bi bi-funnel-fill me-2"></i>Buscar por fecha
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-bordered align-middle rounded-3 overflow-hidden" id="TablaPrestamos">
